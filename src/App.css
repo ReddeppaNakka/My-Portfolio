@@ -327,11 +327,12 @@ body {
 
 /* Typing Effect */
 .typing-container {
-  display: inline-block;
-  min-width: auto;      /* 🔥 remove fixed width */
+  display: block;          /* 🔥 not inline */
   max-width: 100%;
-  word-break: break-word;
+  overflow-wrap: break-word;
+  text-align: center;
 }
+
 
 .typing-wrapper {
   display: inline-flex;
@@ -339,36 +340,25 @@ body {
 }
 
 .rotating-text {
-  font-size: clamp(24px, 6vw, 48px); /* 🔥 auto-scale */
+  font-size: clamp(22px, 5vw, 48px);
   font-weight: 700;
   color: #00ff99;
   text-align: center;
+  word-break: break-word;     /* 🔥 allow wrapping */
+  white-space: normal;        /* 🔥 remove nowrap */
+  max-width: 100%;
 }
+
+.cursor {
+  font-size: clamp(22px, 5vw, 48px);
+}
+
 
 .cursor {
   margin-left: 4px;
   font-size: 48px;
   color: #00ff99;
   animation: blink 1s steps(2, start) infinite;
-}
-
-@media (max-width: 768px) {
-  .static-text {
-    font-size: 26px;
-  }
-
-  .name {
-    font-size: 32px;
-  }
-
-  .subtitle {
-    font-size: 22px;
-  }
-
-  .rotating-text,
-  .cursor {
-    font-size: 26px;
-  }
 }
 
 @keyframes blink {
@@ -445,38 +435,21 @@ body {
 .about {
   padding: 60px 80px;
   max-width: 900px;
-  margin: 0 auto;
 }
 
 .about h2 {
-  font-size: clamp(24px, 4vw, 32px);
-  margin-bottom: 20px;
+  font-size: 32px;
 }
 
 .about-text {
-  font-size: clamp(15px, 2.5vw, 16px);
-  line-height: 1.9;
+  font-size: 16px;
+  line-height: 1.8;
   color: #cccccc;
-  margin-bottom: 18px;
-  max-width: 65ch;          /* 🔥 readable line length */
 }
 
 .about-text span {
   color: #00ff99;
   font-weight: 600;
-}
-/* ===== MOBILE ===== */
-@media (max-width: 768px) {
-  .about {
-    padding: 40px 20px;
-    text-align: left;
-  }
-
-  .about-text {
-    max-width: 100%;
-    font-size: 15px;
-    line-height: 1.8;
-  }
 }
 
 /* ===== SKILLS ===== */
