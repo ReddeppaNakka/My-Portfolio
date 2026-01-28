@@ -929,3 +929,28 @@ body {
     padding: 22px 20px;  /* slightly wider feel */
   }
 }
+
+/* ===== TECHNICAL EXPERTISE – MOBILE LEFT EDGE ALIGN ===== */
+@media (max-width: 768px) {
+
+  .skills {
+    padding-left: 14px;     /* 🔥 match About & Projects */
+    padding-right: 14px;
+    text-align: left;
+  }
+
+  .skill-cards {
+    align-items: flex-start;
+  }
+
+  .card {
+    width: 100%;
+    align-self: flex-start;
+    text-align: left;
+  }
+
+  .card-header {
+    justify-content: flex-start;
+    text-align: left;
+  }
+}
