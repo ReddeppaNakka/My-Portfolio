@@ -1,24 +1,44 @@
 # 🌐 My Portfolio Website
 
-A personal portfolio website showcasing my projects, skills, and experience as a Computer Science student and aspiring software engineer.
+This is my personal portfolio website showcasing my projects, skills, certifications, and experience as a Computer Science Engineering student.
 
 ## ✨ Features
-- Responsive design
-- Projects section with details
-- Skills and experience overview
-- Clean and modern UI
+- Responsive and modern UI
+- Dedicated sections for Projects, Skills, Experience, and Certifications
+- Smooth navigation and clean layout
 
-## 🛠️ Built With
-- HTML
-- CSS
+## 🛠️ Tech Stack
+- React
 - JavaScript
-- React (if applicable)
+- HTML5
+- CSS3
 
-## 📸 Preview
-Screenshots are available below.
+## 📸 Screenshots
+
+### 🏠 Home
+![Home](screenshots/home.png)
+
+### 🙋 About
+![About](screenshots/about.png)
+
+### 🛠️ Skills
+![Skills](screenshots/skills.png)
+
+### 💼 Experience
+![Experience](screenshots/experience.png)
+
+### 📜 Certifications
+![Certifications](screenshots/certificates.png)
+
+### 🚀 Projects
+![Projects](screenshots/projects.png)
+
+### 📬 Contact
+![Contact](screenshots/contact.png)
 
 ## 🚀 Live Demo
-Coming soon...
+(Deployment link coming soon)
 
-## 📬 Contact
-- GitHub: https://github.com/ReddeppaNakka
+## 👤 Author
+**Reddeppa Nakka**  
+GitHub: https://github.com/ReddeppaNakka
