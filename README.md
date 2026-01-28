@@ -37,7 +37,7 @@ This is my personal portfolio website showcasing my projects, skills, certificat
 ![Contact](screenshots/contact.png)
 
 ## 🚀 Live Demo
-(Deployment link coming soon)
+👉 [View Portfolio Live](https://reddeppa-portfolio.netlify.app/)
 
 ## 👤 Author
 **Reddeppa Nakka**  
