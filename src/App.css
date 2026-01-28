@@ -10,7 +10,7 @@ body {
 .navbar {
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 1000;
   background: rgba(5, 5, 5, 0.9);
   backdrop-filter: blur(8px);
   display: flex;
@@ -20,6 +20,7 @@ body {
   border-bottom: 1px solid #222;
 }
 
+/* Logo */
 .logo {
   font-size: 22px;
   font-weight: 700;
@@ -38,22 +39,16 @@ body {
   text-shadow: 0 0 8px rgba(0, 255, 153, 0.6);
 }
 
-.navbar ul {
+/* ===== NAV LINKS (DESKTOP) ===== */
+.nav-links {
   display: flex;
   list-style: none;
   gap: 40px;
   margin: 0;
   padding: 0;
-  margin-right: 25px;
-}
-@media (max-width: 768px) {
-  .navbar ul {
-    margin-right: 0;
-  }
 }
 
-
-
+/* Links */
 .navbar a {
   position: relative;
   text-decoration: none;
@@ -74,8 +69,9 @@ body {
   transition: width 0.3s ease;
 }
 
-.navbar a:hover {
-  color: #ffffff;
+.navbar a:hover,
+.navbar a.active {
+  color: #00ff99;
 }
 
 .navbar a:hover::after,
@@ -83,9 +79,143 @@ body {
   width: 100%;
 }
 
-.navbar a.active {
+/* ===== RESUME BUTTON ===== */
+.resume-btn {
+  padding: 8px 18px;
+  border-radius: 20px;
+  border: 2px solid #00ff99;
   color: #00ff99;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.25s ease;
 }
+
+.resume-btn:hover {
+  background: #00ff99;
+  color: #000;
+  box-shadow: 0 0 18px rgba(0, 255, 153, 0.6);
+}
+
+/* ===== HAMBURGER ===== */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+}
+
+.hamburger span {
+  width: 26px;
+  height: 3px;
+  background: #00ff99;
+  border-radius: 3px;
+}
+
+/* ===== MOBILE NAVBAR ===== */
+@media (max-width: 768px) {
+
+  .navbar {
+    padding: 16px 24px;
+  }
+
+  /* Show hamburger */
+  .hamburger {
+    display: flex;
+  }
+
+  /* Hide desktop links */
+  .nav-links {
+    position: fixed;                 /* 🔥 KEY FIX */
+    top: 64px;                       /* navbar height */
+    left: 0;
+    width: 100%;
+    height: calc(100vh - 64px);
+
+    background: #050505;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 28px;
+
+    display: none;
+    z-index: 999;
+  }
+
+  /* Open state */
+  .nav-links.open {
+    display: flex;
+  }
+
+  .nav-links li {
+    list-style: none;
+  }
+
+  .navbar a {
+    font-size: 18px;
+  }
+
+
+  /* Hero */
+  .hero {
+    flex-direction: column;
+    padding: 50px 20px;
+    text-align: center;
+  }
+
+  .hero-text h1 {
+    font-size: 36px;
+  }
+
+  .rotating-text,
+  .cursor {
+    font-size: 32px;
+  }
+
+  .hero-img img {
+    width: 220px;
+    height: 220px;
+  }
+
+  .connect-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* About */
+  .about {
+    padding: 50px 20px;
+  }
+
+  /* Skills */
+  .skill-cards {
+    flex-direction: column;
+  }
+
+  .card {
+    width: 100%;
+  }
+
+  /* Projects */
+  .project-card {
+    flex-direction: column;
+    padding: 24px;
+  }
+
+  .project-image {
+    width: 100%;
+    height: 220px;
+  }
+
+  /* Contact */
+  .contact {
+    padding: 60px 20px;
+  }
+
+  .contact-card {
+    width: 100%;
+  }
+}
+
 
 /* ===== RESUME BUTTON ===== */
 .resume-btn {
@@ -198,8 +328,9 @@ body {
 /* Typing Effect */
 .typing-container {
   display: inline-block;
-  min-width: 28ch;
-  height: 1.2em;
+  min-width: auto;      /* 🔥 remove fixed width */
+  max-width: 100%;
+  word-break: break-word;
 }
 
 .typing-wrapper {
@@ -208,10 +339,10 @@ body {
 }
 
 .rotating-text {
-  font-size: 48px;
+  font-size: clamp(24px, 6vw, 48px); /* 🔥 auto-scale */
   font-weight: 700;
   color: #00ff99;
-  white-space: nowrap;
+  text-align: center;
 }
 
 .cursor {
@@ -219,6 +350,25 @@ body {
   font-size: 48px;
   color: #00ff99;
   animation: blink 1s steps(2, start) infinite;
+}
+
+@media (max-width: 768px) {
+  .static-text {
+    font-size: 26px;
+  }
+
+  .name {
+    font-size: 32px;
+  }
+
+  .subtitle {
+    font-size: 22px;
+  }
+
+  .rotating-text,
+  .cursor {
+    font-size: 26px;
+  }
 }
 
 @keyframes blink {
