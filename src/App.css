@@ -473,6 +473,19 @@ body {
   color: #00ff99;
   font-weight: 600;
 }
+/* ===== ABOUT – WIDER ON MOBILE ===== */
+@media (max-width: 768px) {
+
+  .about {
+    padding: 40px 14px;   /* was 20px → now wider */
+  }
+
+  .about-text {
+    max-width: 100%;
+    width: 100%;
+  }
+}
+
 
 /* ===== SKILLS ===== */
 .skills {
@@ -902,5 +915,17 @@ body {
 
   .project-content h3 {
     font-size: 19px;
+  }
+}
+
+/* ===== PROJECTS – WIDER ON MOBILE ===== */
+@media (max-width: 768px) {
+
+  .projects {
+    padding: 60px 14px;   /* was 20px → now wider */
+  }
+
+  .project-card {
+    padding: 22px 20px;  /* slightly wider feel */
   }
 }
