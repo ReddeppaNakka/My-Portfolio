@@ -445,21 +445,38 @@ body {
 .about {
   padding: 60px 80px;
   max-width: 900px;
+  margin: 0 auto;
 }
 
 .about h2 {
-  font-size: 32px;
+  font-size: clamp(24px, 4vw, 32px);
+  margin-bottom: 20px;
 }
 
 .about-text {
-  font-size: 16px;
-  line-height: 1.8;
+  font-size: clamp(15px, 2.5vw, 16px);
+  line-height: 1.9;
   color: #cccccc;
+  margin-bottom: 18px;
+  max-width: 65ch;          /* 🔥 readable line length */
 }
 
 .about-text span {
   color: #00ff99;
   font-weight: 600;
+}
+/* ===== MOBILE ===== */
+@media (max-width: 768px) {
+  .about {
+    padding: 40px 20px;
+    text-align: left;
+  }
+
+  .about-text {
+    max-width: 100%;
+    font-size: 15px;
+    line-height: 1.8;
+  }
 }
 
 /* ===== SKILLS ===== */
