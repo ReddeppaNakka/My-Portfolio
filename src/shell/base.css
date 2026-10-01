@@ -1,0 +1,42 @@
+/* Global reset shared by all themes. Everything visual lives inside each theme,
+   scoped under its root class, because lazily loaded theme CSS stays in the
+   document after switching. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  background: #0b1120;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+.shell-loading {
+  position: fixed;
+  inset: 0;
+  background: #0b1120;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
