@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { profile, experience, projects } from "../../data/portfolio";
+import { profile, experience, projects, photos } from "../../data/portfolio";
 import { AppIcon } from "./AppIcon";
 import { APPS, DESKTOP_ICONS, appTitle } from "./registry";
 import { OsContext, formatIST, prefersReducedMotion, useNow } from "./common";
@@ -99,7 +99,7 @@ export default function Mobile({ page }) {
           <StatusBar />
           <main className="os-m-main">
             <section className="os-m-widget" aria-label="Profile">
-              <img src={profile.photo} alt={`Portrait of ${profile.name}`} width="64" height="64" />
+              <img src={photos.os.portrait} alt={`Portrait of ${profile.name}`} width="64" height="64" />
               <div>
                 <h1>{profile.name}</h1>
                 <p>{profile.title} · {profile.role}</p>

@@ -9,6 +9,7 @@ import {
   projects,
   featuredProjects,
   certifications,
+  photos,
 } from "../../data/portfolio";
 import { socialIcon, ArrowUpRightIcon, ArrowRightIcon, GitHubIcon, ExternalIcon } from "../../shell/icons";
 import { ext, hostname, Pills, StatusBadge, Thumb } from "./parts";
@@ -136,6 +137,10 @@ function About() {
   return (
     <Section id="about" title="About">
       <div className="m-about">
+        <figure className="m-candid">
+          <img src={photos.minimal.candid} alt={`${profile.name} working late at a desk, the city lit up outside`} width="1600" height="800" loading="lazy" decoding="async" />
+          <figcaption>Late shift, Hyderabad. Most of what's below was built at this desk.</figcaption>
+        </figure>
         {profile.about.map((p, i) => (
           <p key={i}>
             <Rich text={p} />
@@ -233,7 +238,7 @@ function Projects() {
         {featuredProjects.map((p) => {
           const href = p.live || p.github;
           return (
-            <li key={p.id} className="m-card m-card--project">
+            <li key={p.id} className="m-card m-card--project" data-cursor={p.live ? "Live ↗" : "Code ↗"}>
               <div className="m-thumb">
                 <Thumb project={p} />
               </div>
@@ -299,18 +304,104 @@ function Certifications() {
 
 /* ---------- page ---------- */
 
+const KNOB_TRAVEL = 26; // px the switch knob moves between off and on
+
+function BulbIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+      <path className="m-bulb__glass" d="M12 2.5a6.5 6.5 0 00-3.8 11.8c.6.5 1 1.2 1 2V17h5.6v-.7c0-.8.4-1.5 1-2A6.5 6.5 0 0012 2.5z" />
+      <path className="m-bulb__base" d="M9.6 18.6h4.8M10.2 21h3.6" />
+    </svg>
+  );
+}
+
+// Black & white portrait with a light switch: off = monochrome, on = colour.
+// The switch can be clicked, tapped, dragged, or toggled from the keyboard,
+// and clicking the photo flips it too. Its position always mirrors the photo.
+function Portrait() {
+  const [on, setOn] = useState(false);
+  const [dragX, setDragX] = useState(null);
+  const [touched, setTouched] = useState(false);
+  const drag = useRef(null);
+  const dragged = useRef(false);
+
+  const set = (v) => {
+    setOn(v);
+    setTouched(true);
+  };
+  const onPointerDown = (e) => {
+    drag.current = { x: e.clientX, from: on ? KNOB_TRAVEL : 0, moved: false };
+    e.currentTarget.setPointerCapture?.(e.pointerId);
+  };
+  const onPointerMove = (e) => {
+    const d = drag.current;
+    if (!d) return;
+    const dx = e.clientX - d.x;
+    if (Math.abs(dx) > 3) d.moved = true;
+    if (d.moved) setDragX(Math.max(0, Math.min(KNOB_TRAVEL, d.from + dx)));
+  };
+  const onPointerUp = () => {
+    const d = drag.current;
+    drag.current = null;
+    if (d?.moved) {
+      dragged.current = true; // swallow the click that follows a drag
+      set((dragX ?? d.from) > KNOB_TRAVEL / 2);
+    }
+    setDragX(null);
+  };
+  const onClick = () => {
+    if (dragged.current) {
+      dragged.current = false;
+      return;
+    }
+    set(!on);
+  };
+
+  // while dragging, the photo previews the state the switch is heading to
+  const lit = dragX == null ? on : dragX > KNOB_TRAVEL / 2;
+  const knobX = dragX ?? (on ? KNOB_TRAVEL : 0);
+
+  return (
+    <div className={`m-portrait${lit ? " is-on" : ""}${touched ? " is-touched" : ""}`}>
+      <img src={photos.minimal.portrait} alt={`Portrait of ${profile.name}`} width="900" height="1125" onClick={() => set(!on)} />
+      <button
+        type="button"
+        role="switch"
+        aria-checked={on}
+        aria-label="Show portrait in colour"
+        className={`m-switch${dragX != null ? " is-dragging" : ""}`}
+        onClick={onClick}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
+        onPointerCancel={onPointerUp}
+      >
+        <span className="m-switch__text" aria-hidden="true">
+          {lit ? "ON" : "OFF"}
+        </span>
+        <span className="m-switch__knob" style={{ transform: `translateX(${knobX}px)` }} aria-hidden="true">
+          <BulbIcon />
+        </span>
+      </button>
+    </div>
+  );
+}
+
 function Header({ active }) {
   return (
     <header className="m-side">
-      <div>
-        <h1 className="m-name">
-          <a href="#top">{profile.name}</a>
-        </h1>
-        <p className="m-role">{profile.title}</p>
+      <div className="m-side__top">
+        <div className="m-id">
+          <h1 className="m-name">
+            <a href="#top">{profile.name}</a>
+          </h1>
+          <Portrait />
+          <p className="m-role">{profile.title}</p>
+        </div>
         <p className="m-tagline">{profile.tagline}</p>
         <p className="m-avail">
           <span className="m-avail__dot" aria-hidden="true" />
-          {profile.availability} · {profile.location}
+          {profile.availability} · based in {profile.location.split(",")[0]}
         </p>
         <nav className="m-nav" aria-label="In-page">
           <ul>

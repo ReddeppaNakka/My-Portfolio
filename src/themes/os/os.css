@@ -69,59 +69,37 @@ html[data-theme="os"] body {
     radial-gradient(90% 80% at 100% 100%, #0b6b66 0%, transparent 60%),
     linear-gradient(140deg, #17154a 0%, #24206b 38%, #1a3a66 66%, #0d4d4f 100%);
 }
-.th-os .os-blob {
+/* the painted wallpaper — figure sits right of centre, so bias the crop there */
+.th-os .os-wallpaper-img {
   position: absolute;
-  border-radius: 50%;
-  filter: blur(70px);
-  opacity: 0.55;
-  will-change: transform;
-  animation: os-drift 28s ease-in-out infinite alternate;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 62% 50%;
+  opacity: 0;
+  transform: scale(1.06);
+  transition: opacity 1.2s ease, transform 2.6s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
-.th-os .os-blob--a {
-  width: 46vmax;
-  height: 46vmax;
-  left: -8vmax;
-  top: -12vmax;
-  background: radial-gradient(circle, #7c3aed 0%, transparent 68%);
+.th-os .os-wallpaper-img.is-loaded {
+  opacity: 1;
+  transform: scale(1);
 }
-.th-os .os-blob--b {
-  width: 42vmax;
-  height: 42vmax;
-  right: -10vmax;
-  bottom: -14vmax;
-  background: radial-gradient(circle, #14b8a6 0%, transparent 66%);
-  animation-duration: 34s;
-  animation-direction: alternate-reverse;
-}
-.th-os .os-blob--c {
-  width: 30vmax;
-  height: 30vmax;
-  left: 38%;
-  top: 22%;
-  background: radial-gradient(circle, #2563eb 0%, transparent 66%);
-  opacity: 0.4;
-  animation-duration: 40s;
-}
-.th-os .os-blob--d {
-  width: 22vmax;
-  height: 22vmax;
-  right: 16%;
-  top: -6vmax;
-  background: radial-gradient(circle, #db2777 0%, transparent 66%);
-  opacity: 0.26;
-  animation-duration: 31s;
+/* soft shading so icon labels (left), the menu bar (top) and the dock (bottom) stay readable */
+.th-os .os-wallpaper-shade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(12, 10, 40, 0.62) 0%, rgba(12, 10, 40, 0.28) 14%, rgba(12, 10, 40, 0) 26%),
+    linear-gradient(180deg, rgba(12, 10, 40, 0.5) 0%, rgba(12, 10, 40, 0) 9%),
+    linear-gradient(0deg, rgba(8, 8, 30, 0.45) 0%, rgba(8, 8, 30, 0) 16%);
 }
 .th-os .os-grain {
   position: absolute;
   inset: 0;
   opacity: 0.08;
   mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-@keyframes os-drift {
-  0% { transform: translate3d(0, 0, 0) scale(1); }
-  50% { transform: translate3d(4vmax, 3vmax, 0) scale(1.08); }
-  100% { transform: translate3d(-3vmax, 5vmax, 0) scale(0.96); }
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url%28%23n%29'/%3E%3C/svg%3E");
 }
 
 /* ---------- Boot ---------- */
@@ -959,6 +937,7 @@ html[data-theme="os"] body {
   height: 100%;
   border-radius: 50%;
   object-fit: cover;
+  object-position: 50% 30%;
   border: 3px solid #fff;
   background: #e8e9f3;
 }
@@ -2215,6 +2194,7 @@ html[data-theme="os"] body {
   height: 64px;
   border-radius: 50%;
   object-fit: cover;
+  object-position: 50% 30%;
   border: 2px solid rgba(255, 255, 255, 0.7);
   flex-shrink: 0;
 }
@@ -2407,7 +2387,6 @@ html[data-theme="os"] body {
 
 /* ---------- Motion preferences ---------- */
 @media (prefers-reduced-motion: reduce) {
-  .th-os .os-blob,
   .th-os .os-badge--live i,
   .th-os .os-sheet,
   .th-os .os-sheet.is-closing,
@@ -2472,4 +2451,190 @@ html[data-theme="os"] body {
 }
 @media (prefers-reduced-motion: reduce) {
   .th-os .os-m-now button { animation: none; }
+}
+
+/* ---------- Reddy OS cursors (fine pointers only) ----------
+   Real OS cursors never lag, so these are SVG cursors rather than DOM followers.
+   Resize handles and text fields keep their native cursors. */
+@media (pointer: fine) {
+  html[data-theme="os"],
+  html[data-theme="os"] body,
+  .th-os button:disabled,
+  .th-os .os-menu-pop button:disabled {
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23ffffff'/%3E%3Cstop offset='1' stop-color='%23e4e7ff'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M5 3.5v19.2l5.1-4.9 3.6 7.9 3.4-1.5-3.6-7.7h7z' fill='%230b1030' opacity='.35' transform='translate%281.2 1.6%29'/%3E%3Cpath d='M5 3.5v19.2l5.1-4.9 3.6 7.9 3.4-1.5-3.6-7.7h7z' fill='url%28%23g%29' stroke='%231e1b4b' stroke-width='1.4' stroke-linejoin='round'/%3E%3C/svg%3E") 5 3, default;
+  }
+  .th-os :is(a, button:not(:disabled), [role="button"], [role="menuitem"], [role="option"], summary, label),
+  .th-os .os-t-link {
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23ffffff'/%3E%3Cstop offset='1' stop-color='%23e4e7ff'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M5 3.5v19.2l5.1-4.9 3.6 7.9 3.4-1.5-3.6-7.7h7z' fill='%230b1030' opacity='.35' transform='translate%281.2 1.6%29'/%3E%3Cpath d='M5 3.5v19.2l5.1-4.9 3.6 7.9 3.4-1.5-3.6-7.7h7z' fill='url%28%23g%29' stroke='%231e1b4b' stroke-width='1.4' stroke-linejoin='round'/%3E%3Ccircle cx='22' cy='23' r='6.5' fill='%236366f1' stroke='%23fff' stroke-width='1.6'/%3E%3Cpath d='M19.6 25.4l4.8-4.8M21 20.6h3.4V24' fill='none' stroke='%23fff' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") 5 3, pointer;
+  }
+  .th-os .os-boot {
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23ffffff'/%3E%3Cstop offset='1' stop-color='%23e4e7ff'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M5 3.5v19.2l5.1-4.9 3.6 7.9 3.4-1.5-3.6-7.7h7z' fill='%230b1030' opacity='.35' transform='translate%281.2 1.6%29'/%3E%3Cpath d='M5 3.5v19.2l5.1-4.9 3.6 7.9 3.4-1.5-3.6-7.7h7z' fill='url%28%23g%29' stroke='%231e1b4b' stroke-width='1.4' stroke-linejoin='round'/%3E%3Ccircle cx='22' cy='23' r='6.5' fill='%230e7490' stroke='%23fff' stroke-width='1.6'/%3E%3Cpath d='M22 19.5a3.5 3.5 0 1 1-3.5 3.5' fill='none' stroke='%23fff' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E") 5 3, progress;
+  }
+  .th-os .os-win-title {
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23ffffff'/%3E%3Cstop offset='1' stop-color='%23e4e7ff'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M5 3.5v19.2l5.1-4.9 3.6 7.9 3.4-1.5-3.6-7.7h7z' fill='%230b1030' opacity='.35' transform='translate%281.2 1.6%29'/%3E%3Cpath d='M5 3.5v19.2l5.1-4.9 3.6 7.9 3.4-1.5-3.6-7.7h7z' fill='url%28%23g%29' stroke='%231e1b4b' stroke-width='1.4' stroke-linejoin='round'/%3E%3C/svg%3E") 5 3, default;
+  }
+  .th-os :is(input, textarea, [contenteditable="true"]) {
+    cursor: text;
+  }
+}
+
+/* ---------- Photos (personal albums) ---------- */
+.th-os .os-albums {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  margin-bottom: 16px;
+  border-radius: 10px;
+  background: var(--os-soft);
+}
+.th-os .os-albums button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--os-ink2);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.th-os .os-albums button span {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--os-ink3);
+}
+.th-os .os-albums button.is-on {
+  background: #fff;
+  color: var(--os-accent);
+  box-shadow: 0 1px 3px rgba(10, 12, 40, 0.15);
+}
+.th-os .os-gallery .os-photo-img img {
+  object-fit: cover;
+  padding: 0;
+}
+.th-os .os-gallery .os-photos-grid.is-tall .os-photo-img {
+  aspect-ratio: 4 / 5;
+}
+.th-os .os-gallery .os-photos-grid.is-tall .os-photo-img img {
+  object-position: 50% 20%;
+}
+.th-os .os-gallery .os-viewer-stage img {
+  background: none;
+}
+
+/* ---------- login screen (after boot) ---------- */
+.th-os .os-login {
+  position: fixed;
+  inset: 0;
+  z-index: 9800;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  color: #fff;
+  background: rgba(14, 12, 40, 0.35);
+  -webkit-backdrop-filter: blur(22px) saturate(1.2);
+  backdrop-filter: blur(22px) saturate(1.2);
+  animation: os-fade 0.35s ease-out;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+.th-os .os-login.is-leaving {
+  opacity: 0;
+  transform: scale(1.04);
+}
+.th-os .os-login-time {
+  position: absolute;
+  top: 9vh;
+  text-align: center;
+  font-weight: 700;
+  font-size: clamp(56px, 9vw, 104px);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  text-shadow: 0 6px 30px rgba(10, 8, 40, 0.4);
+}
+.th-os .os-login-time small {
+  display: block;
+  margin-top: 10px;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0;
+  opacity: 0.85;
+}
+.th-os .os-login-avatar {
+  width: 132px;
+  height: 132px;
+  padding: 4px;
+  border-radius: 50%;
+  background: conic-gradient(from 200deg, #818cf8, #5eead4, #a78bfa, #818cf8);
+  box-shadow: 0 18px 50px -12px rgba(10, 8, 40, 0.7);
+}
+.th-os .os-login-avatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  image-rendering: pixelated;
+  background: #1b1d2a;
+  border: 3px solid rgba(255, 255, 255, 0.9);
+}
+.th-os .os-login-name {
+  margin: 4px 0 0;
+  font-size: 22px;
+  font-weight: 700;
+}
+.th-os .os-login-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.th-os .os-login-btn:hover,
+.th-os .os-login-btn:focus-visible {
+  background: rgba(255, 255, 255, 0.28);
+}
+.th-os .os-login-hint {
+  position: absolute;
+  bottom: 6vh;
+  font-size: 12.5px;
+  opacity: 0.7;
+}
+
+/* menu-bar user chip */
+.th-os .os-mb-user {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  object-fit: cover;
+  image-rendering: pixelated;
+  background: #1b1d2a;
+  box-shadow: 0 0 0 1.5px rgba(255, 255, 255, 0.7);
+}
+@media (prefers-reduced-motion: reduce) {
+  .th-os .os-wallpaper-img {
+    transform: none;
+    transition: opacity 0.4s ease;
+  }
+}
+/* phones: icons sit over the busiest part of the painting, so dim it evenly */
+@media (max-width: 767px), (pointer: coarse) and (max-width: 1023px) {
+  .th-os .os-wallpaper-shade {
+    background:
+      linear-gradient(180deg, rgba(12, 10, 40, 0.55) 0%, rgba(12, 10, 40, 0.35) 45%, rgba(8, 8, 30, 0.5) 100%);
+  }
+  .th-os .os-wallpaper-img {
+    object-position: 66% 40%;
+  }
 }

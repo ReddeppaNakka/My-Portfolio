@@ -22,3 +22,9 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# original high-res artwork (kept locally, not deployed)
+/assets-src
+
+# original photos (optimised copies live in public/photos)
+/photos-src

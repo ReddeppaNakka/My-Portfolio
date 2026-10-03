@@ -1,4 +1,4 @@
-import { profile, socials, stats, education, skills } from "../../../data/portfolio";
+import { profile, socials, stats, education, skills, photos } from "../../../data/portfolio";
 import { socialIcon, FileIcon, MailIcon } from "../../../shell/icons";
 import { EXT, useOs } from "../common";
 
@@ -8,7 +8,7 @@ export default function About() {
     <div className="os-app os-about">
       <header className="os-about-hero">
         <div className="os-about-photo">
-          <img src={profile.photo} alt={`Portrait of ${profile.name}`} width="112" height="112" />
+          <img src={photos.os.portrait} alt={`Portrait of ${profile.name}`} width="112" height="112" />
         </div>
         <div className="os-about-id">
           <p className="os-eyebrow">{profile.availability}</p>

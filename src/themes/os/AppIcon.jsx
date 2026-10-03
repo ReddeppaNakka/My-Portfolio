@@ -8,6 +8,7 @@ const TILES = {
   terminal: ["#1f2433", "#0b0d14"],
   resume: ["#ffffff", "#e5e7eb"],
   certs: ["#2dd4bf", "#0f766e"],
+  photos: ["#fdf2f8", "#e0e7ff"],
   contact: ["#60a5fa", "#4f46e5"],
   readme: ["#fef3c7", "#fde68a"],
   osinfo: ["#312e81", "#0f766e"],
@@ -68,6 +69,23 @@ function Glyph({ app, gid }) {
           <circle cx="32" cy="27" r="14" fill="#fff" />
           <circle cx="32" cy="27" r="9" fill="none" stroke="#14b8a6" strokeWidth="2.5" />
           <path d="M32 21.5l1.7 3.5 3.8.5-2.8 2.7.7 3.8-3.4-1.8-3.4 1.8.7-3.8-2.8-2.7 3.8-.5z" fill="#f59e0b" />
+        </g>
+      );
+    case "photos":
+      return (
+        <g>
+          {[
+            ["#f43f5e", 0],
+            ["#f59e0b", 45],
+            ["#eab308", 90],
+            ["#22c55e", 135],
+            ["#14b8a6", 180],
+            ["#3b82f6", 225],
+            ["#8b5cf6", 270],
+            ["#ec4899", 315],
+          ].map(([c, r]) => (
+            <ellipse key={r} cx="32" cy="20" rx="6.5" ry="11" fill={c} opacity=".85" transform={`rotate(${r} 32 32)`} />
+          ))}
         </g>
       );
     case "contact":

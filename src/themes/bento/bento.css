@@ -483,6 +483,59 @@ html[data-theme="bento"] body {
   object-position: 50% 20%;
   filter: contrast(1.04) saturate(1.05);
 }
+/* flip card: work-mode portrait on the front, off-duty photo on the back */
+.th-bento .bt-flip {
+  position: relative;
+  display: block;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  perspective: 1400px;
+  overflow: visible;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+.th-bento .bt-flip-inner {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transition: transform 0.75s cubic-bezier(0.2, 0.75, 0.25, 1.15);
+}
+.th-bento .bt-flip .bt-flip-face {
+  position: absolute;
+  inset: 0;
+  border: var(--border);
+  border-radius: 10px;
+  background: var(--paper-2);
+  box-shadow: var(--shadow-sm);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+.th-bento .bt-flip .bt-flip-back {
+  transform: rotateY(180deg);
+}
+.th-bento .bt-flip.is-flipped .bt-flip-inner {
+  transform: rotateY(180deg);
+}
+.th-bento .bt-flip:not(.is-flipped):hover .bt-flip-inner {
+  transform: rotateY(-8deg);
+}
+.th-bento .bt-flip:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 4px;
+  border-radius: 12px;
+}
+.th-bento .bt-sticker--flip {
+  position: absolute;
+  top: 26px;
+  right: -8px;
+  background: var(--paper-2);
+  font-size: 11.5px;
+  padding: 6px 10px;
+  transform: rotate(6deg);
+  pointer-events: none;
+}
 .th-bento .bt-sticker--place {
   position: absolute;
   left: -10px;
@@ -1405,6 +1458,38 @@ html[data-theme="bento"] body {
   flex-wrap: wrap;
   gap: 10px;
 }
+/* 3D avatar waving from the bottom-right corner of the contact tile */
+.th-bento .bt-contact {
+  position: relative;
+}
+.th-bento .bt-avatar {
+  position: absolute;
+  right: clamp(8px, 3vw, 48px);
+  bottom: 0;
+  width: clamp(220px, 27vw, 400px);
+  height: auto;
+  transform-origin: 50% 100%;
+  filter: drop-shadow(6px 6px 0 rgba(17, 17, 17, 0.9));
+  transition: transform 0.35s cubic-bezier(0.3, 1.6, 0.5, 1);
+  pointer-events: none;
+}
+.th-bento .bt-contact:hover .bt-avatar {
+  transform: translateY(-6px) rotate(-2deg);
+}
+@media (min-width: 1024px) {
+  .th-bento .bt-contact {
+    padding-right: clamp(260px, 30vw, 460px);
+  }
+}
+@media (max-width: 1023px) {
+  .th-bento .bt-avatar {
+    position: relative;
+    right: auto;
+    align-self: center;
+    width: min(70%, 300px);
+    margin-bottom: calc(-1 * clamp(28px, 5vw, 72px));
+  }
+}
 .th-bento .bt-sticker--reply {
   position: absolute;
   top: clamp(24px, 4vw, 56px);
@@ -1650,4 +1735,69 @@ html[data-theme="bento"] body {
 @media (max-width: 480px) {
   .th-bento .bt-contact-socials { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .th-bento .bt-contact-socials .bt-btn { padding: 0 10px; }
+}
+
+/* ---------- custom cursor (fine pointers only) ----------
+   The arrow and link cursors are SVGs so they move with zero lag; a sticker
+   follows them over project tiles. */
+@media (pointer: fine) {
+  html[data-theme="bento"],
+  html[data-theme="bento"] body {
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cpath d='M6 5v21l6-6 4.2 9 4-1.9-4.1-8.6H24z' fill='%23111' transform='translate%283 3%29'/%3E%3Cpath d='M6 5v21l6-6 4.2 9 4-1.9-4.1-8.6H24z' fill='%23ffd23f' stroke='%23111' stroke-width='2' stroke-linejoin='round'/%3E%3C/svg%3E") 6 5, auto;
+  }
+  .th-bento a,
+  .th-bento button,
+  .th-bento [role="button"],
+  .th-bento label {
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Ccircle cx='22' cy='22' r='14' fill='%23111'/%3E%3Ccircle cx='19' cy='19' r='14' fill='%23ff6b5b' stroke='%23111' stroke-width='2'/%3E%3Cpath d='M14 24l10-10M16 14h8v8' fill='none' stroke='%23111' stroke-width='2.6' stroke-linecap='square'/%3E%3C/svg%3E") 19 19, pointer;
+  }
+  .th-bento :is(.bt-tile, .bt-card, .bt-feat):active {
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cpath d='M6 5v21l6-6 4.2 9 4-1.9-4.1-8.6H24z' fill='%23111' transform='translate%283 3%29'/%3E%3Cpath d='M6 5v21l6-6 4.2 9 4-1.9-4.1-8.6H24z' fill='%23ff6b5b' stroke='%23111' stroke-width='2' stroke-linejoin='round'/%3E%3C/svg%3E") 6 5, auto;
+  }
+  .th-bento input,
+  .th-bento textarea {
+    cursor: text;
+  }
+}
+.th-bento .bt-cursor-dot {
+  display: none;
+}
+.th-bento .bt-cursor-sticker {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 2147483647;
+  pointer-events: none;
+  will-change: transform;
+}
+.th-bento .bt-cursor-sticker::before {
+  content: attr(data-label);
+  position: absolute;
+  left: 22px;
+  top: 22px;
+  padding: 7px 11px;
+  border: 2px solid #111;
+  border-radius: 999px;
+  background: #ffd23f;
+  box-shadow: 3px 3px 0 #111;
+  font: 700 12px/1 "JetBrains Mono", "Space Mono", ui-monospace, monospace;
+  letter-spacing: 0.06em;
+  color: #111;
+  white-space: nowrap;
+  opacity: 0;
+  transform: scale(0.6) rotate(-8deg);
+  transform-origin: 0 0;
+  transition: opacity 0.18s ease, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.th-bento .bt-cursor-sticker.is-on.has-label::before {
+  opacity: 1;
+  transform: scale(1) rotate(-4deg);
+}
+.th-bento .bt-cursor-sticker.is-down::before {
+  transform: scale(0.92) rotate(-4deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  .th-bento .bt-cursor-sticker::before {
+    transition: none;
+  }
 }

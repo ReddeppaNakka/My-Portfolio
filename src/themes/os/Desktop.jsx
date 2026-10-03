@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
-import { profile } from "../../data/portfolio";
+import { profile, photos } from "../../data/portfolio";
 import { AppIcon, OsLogo } from "./AppIcon";
 import Window from "./Window";
 import { APPS, DESKTOP_ICONS, DOCK_APPS, LABELS, appName, appTitle } from "./registry";
@@ -158,6 +158,7 @@ function MenuBar({ focusedWin, openApp, dispatch }) {
           <path d="M25 6v4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" opacity=".7" />
         </svg>
         <Clock />
+        <img className="os-mb-user" src={photos.os.avatar} alt={profile.nickname} title={`Logged in as ${profile.nickname}`} width="20" height="20" />
       </div>
     </header>
   );

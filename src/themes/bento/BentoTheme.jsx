@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { profile, socials, experience, education, skills, certifications } from "../../data/portfolio";
+import { profile, socials, experience, education, skills, certifications, photos } from "../../data/portfolio";
 import { socialIcon, ArrowUpRightIcon } from "../../shell/icons";
 import { useFonts } from "../../shell/useFonts";
 import Hero from "./Hero";
 import Work from "./Work";
 import { CopyEmail, FILLS, ext, initials, usePrefersReducedMotion } from "./parts";
+import { useFollowCursor } from "../../shell/useFollowCursor";
 import "./bento.css";
 
 const FONTS =
@@ -19,6 +20,18 @@ const NAV = [
 
 const EXP_FILLS = ["yellow", "blue", "mint"];
 const SKILL_FILLS = ["yellow", "coral", "blue", "mint", "lilac", "yellow"];
+
+// Sticker that rides along with the (custom, CSS) arrow over project tiles.
+function Cursor() {
+  const { enabled, dot, ring } = useFollowCursor({ lag: 0.24, primary: ".bt-stretch" });
+  if (!enabled) return null;
+  return (
+    <>
+      <span ref={ring} className="bt-cursor-sticker" aria-hidden="true" />
+      <span ref={dot} className="bt-cursor-dot" aria-hidden="true" />
+    </>
+  );
+}
 
 function TopBar() {
   return (
@@ -219,6 +232,15 @@ function Contact() {
           })}
         </ul>
         <span className="bt-sticker bt-sticker--reply" aria-hidden="true">Say hi ✦</span>
+        <img
+          className="bt-avatar"
+          src={photos.bento.avatar}
+          alt={`Cartoon ${profile.firstName} waving hello`}
+          width="720"
+          height="600"
+          loading="lazy"
+          decoding="async"
+        />
       </div>
     </section>
   );
@@ -239,6 +261,7 @@ export default function BentoTheme({ page = "home" }) {
 
   return (
     <div className="th-bento">
+      <Cursor />
       <a className="bt-skip" href="#main">
         Skip to content
       </a>

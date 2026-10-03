@@ -1149,10 +1149,76 @@ html[data-theme="temple"] {
   font-size: 10px;
 }
 
+/* threshold: ink portrait on a hanging scroll, swaying beside the column */
+.th-temple .tp-scroll {
+  position: absolute;
+  top: -2vh;
+  left: calc(100% + clamp(28px, 4vw, 72px));
+  width: clamp(170px, 14vw, 250px);
+  margin: 0;
+  pointer-events: none;
+}
+.th-temple .tp-scroll::before {
+  /* the cord it hangs from */
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  width: 1px;
+  height: 18vh;
+  background: linear-gradient(180deg, rgba(236, 230, 217, 0), rgba(236, 230, 217, 0.45));
+}
+.th-temple .tp-scroll img {
+  display: block;
+  width: 100%;
+  height: auto;
+  transform-origin: 50% 0;
+  animation: temple-sway 7s ease-in-out infinite;
+  filter: drop-shadow(0 24px 40px rgba(0, 0, 0, 0.6)) drop-shadow(0 0 30px rgba(224, 73, 47, 0.18));
+}
+@keyframes temple-sway {
+  0%, 100% { transform: rotate(-1.1deg); }
+  50% { transform: rotate(1.1deg); }
+}
+.th-temple.is-reduced .tp-scroll img {
+  animation: none;
+}
+
 /* garden / footer */
 .th-temple .tp-footer {
   min-height: 100vh;
   padding-bottom: 120px;
+}
+/* the Hokage, met at the summit — stands in the lower right, behind the kanji */
+.th-temple .tp-hokage {
+  position: absolute;
+  right: calc(var(--tp-gr) + 1vw);
+  bottom: 0;
+  z-index: 0;
+  height: min(88vh, 940px);
+  aspect-ratio: 2 / 3;
+  margin: 0;
+  pointer-events: none;
+}
+.th-temple .tp-hokage::after {
+  /* ground mist swallowing the feet */
+  content: "";
+  position: absolute;
+  left: -20%;
+  right: -20%;
+  bottom: -2%;
+  height: 22%;
+  background: radial-gradient(ellipse 60% 70% at 50% 100%, rgba(10, 13, 20, 0.95), rgba(10, 13, 20, 0));
+}
+.th-temple .tp-hokage-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: 50% 100%;
+  -webkit-mask-image: linear-gradient(180deg, #000 78%, transparent 99%);
+  mask-image: linear-gradient(180deg, #000 78%, transparent 99%);
+  filter: drop-shadow(0 0 28px rgba(224, 73, 47, 0.35));
 }
 .th-temple .tp-footer .tp-chapter-inner {
   max-width: min(860px, 62vw);
@@ -1226,6 +1292,43 @@ html[data-theme="temple"] {
   margin: 0 0 56px;
   padding-left: 22px;
   border-left: 1px solid var(--tp-verm);
+}
+/* closing epigraph — the last words at the summit */
+.th-temple .tp-epigraph {
+  margin: 0 0 64px;
+}
+.th-temple .tp-epigraph blockquote {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.18em 0.42em;
+  margin: 0 0 18px;
+  font-family: var(--tp-serif);
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(44px, 6.4vw, 104px);
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--tp-bone);
+  text-shadow: 0 0 42px rgba(224, 73, 47, 0.28);
+}
+.th-temple .tp-epigraph blockquote i {
+  width: 0.13em;
+  height: 0.13em;
+  border-radius: 50%;
+  background: var(--tp-verm);
+  box-shadow: 0 0 16px rgba(224, 73, 47, 0.7);
+}
+.th-temple .tp-epigraph figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  padding-left: 2px;
+  color: var(--tp-amber);
+  letter-spacing: 0.22em;
+}
+.th-temple .tp-epigraph figcaption .tp-dim {
+  letter-spacing: 0.08em;
 }
 .th-temple .tp-credits {
   display: flex;
@@ -1319,6 +1422,34 @@ html[data-theme="temple"] {
   .th-temple .tp-menu-btn {
     display: inline-flex;
     cursor: pointer;
+  }
+}
+/* not enough room beside the column: the scroll hangs inline, the Hokage
+   steps in front of the closing invitation */
+@media (max-width: 1199px) {
+  .th-temple .tp-scroll {
+    position: relative;
+    top: auto;
+    left: auto;
+    width: min(46%, 220px);
+    margin: 4vh auto 6vh;
+  }
+  .th-temple .tp-scroll::before {
+    height: 6vh;
+  }
+}
+@media (max-width: 1023px) {
+  .th-temple .tp-footer {
+    display: flex;
+    flex-direction: column;
+  }
+  .th-temple .tp-hokage {
+    position: relative;
+    right: auto;
+    order: -1;
+    align-self: center;
+    height: min(70svh, 640px);
+    margin: -6vh 0 -4vh;
   }
 }
 @media (max-width: 1023px) {

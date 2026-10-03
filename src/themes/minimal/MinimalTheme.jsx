@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useFonts } from "../../shell/useFonts";
+import { useFollowCursor } from "../../shell/useFollowCursor";
 import Home from "./Home";
 import Archive from "./Archive";
 import "./minimal.css";
@@ -41,6 +42,18 @@ function useSpotlight(ref) {
   }, [ref]);
 }
 
+// Amber dot that sits exactly on the pointer, with a ring that trails and swells over links.
+function Cursor() {
+  const { enabled, dot, ring } = useFollowCursor({ lag: 0.2, primary: ".m-card__link" });
+  if (!enabled) return null;
+  return (
+    <>
+      <span ref={ring} className="m-cursor-ring" aria-hidden="true" />
+      <span ref={dot} className="m-cursor-dot" aria-hidden="true" />
+    </>
+  );
+}
+
 export default function MinimalTheme({ page = "home" }) {
   useFonts(FONTS);
   const spot = useRef(null);
@@ -49,6 +62,7 @@ export default function MinimalTheme({ page = "home" }) {
   return (
     <div className="th-minimal">
       <div className="m-spotlight" ref={spot} aria-hidden="true" />
+      <Cursor />
       <a className="m-skip" href="#m-content">
         Skip to content
       </a>

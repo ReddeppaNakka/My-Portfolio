@@ -10,120 +10,446 @@
   line-height: 1.3;
   color: #f4f4f5;
   -webkit-font-smoothing: antialiased;
+  cursor: default; /* themes may hide the native cursor; the switcher always shows it */
+}
+.ts-root button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+.ts-root :focus-visible {
+  outline: 2px solid #a5b4fc;
+  outline-offset: 3px;
 }
 
+/* ---------- the button: a pip per design, a slowly turning gradient rim ---------- */
 .ts-button {
+  position: relative;
+  isolation: isolate;
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 16px 10px 12px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  gap: 10px;
+  padding: 10px 14px 10px 12px;
+  border: 0;
   border-radius: 999px;
-  background: rgba(17, 17, 20, 0.86);
-  color: inherit;
-  font: inherit;
+  background: rgba(17, 17, 20, 0.9);
   font-weight: 600;
-  cursor: pointer;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
-  transition: transform 0.2s ease, background 0.2s ease;
+  transition: transform 0.2s ease;
 }
-.ts-button:hover { transform: translateY(-2px); background: rgba(30, 30, 36, 0.92); }
-.ts-button:focus-visible,
-.ts-option:focus-visible { outline: 2px solid #a5b4fc; outline-offset: 2px; }
-.ts-button svg { fill: none; stroke: currentColor; stroke-width: 2; }
+.ts-button::before {
+  content: "";
+  position: absolute;
+  inset: -1.5px;
+  z-index: -1;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: conic-gradient(from var(--ts-spin, 0deg), #fcd34d, #e0492f, #ffd23f, #a5b4fc, #5eead4, #fcd34d);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  animation: ts-spin 6s linear infinite;
+}
+@property --ts-spin {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+@keyframes ts-spin {
+  to { --ts-spin: 360deg; }
+}
+.ts-button:hover {
+  transform: translateY(-2px);
+}
+.ts-button.is-calling {
+  animation: ts-call 1.6s ease-in-out infinite;
+}
+@keyframes ts-call {
+  0%, 100% { box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35), 0 0 0 0 rgba(252, 211, 77, 0.45); }
+  50% { box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35), 0 0 0 9px rgba(252, 211, 77, 0); }
+}
+.ts-pips {
+  display: grid;
+  grid-template-columns: repeat(2, 7px);
+  gap: 3px;
+}
+.ts-pips i {
+  width: 7px;
+  height: 7px;
+  border-radius: 2px;
+  background: var(--c);
+  opacity: 0.35;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.ts-pips i.is-on {
+  opacity: 1;
+  transform: scale(1.15);
+  box-shadow: 0 0 8px var(--c);
+}
+.ts-count {
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #d4d4d8;
+  font-size: 11.5px;
+  font-variant-numeric: tabular-nums;
+}
 
-.ts-panel {
+/* dims the page so the dealt cards stand out */
+.ts-scrim {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(120% 120% at 100% 100%, rgba(5, 5, 10, 0.72), rgba(5, 5, 10, 0.35));
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.ts-scrim.is-on {
+  opacity: 1;
+}
+
+/* ---------- the fan: four cards dealt from the button like a hand ---------- */
+.ts-fan {
+  /* cards are dealt along a rising arc up and to the left of the button;
+     --d is a card's distance from the button (0 = nearest) */
+  --step-x: 205px;
+  --card-w: 240px;
   position: absolute;
   right: 0;
-  bottom: calc(100% + 12px);
-  width: min(320px, calc(100vw - 40px));
-  padding: 14px;
+  bottom: calc(100% + 18px);
+  width: 0;
+  height: 0;
+}
+.ts-fan-title {
+  position: absolute;
+  right: 230px;
+  bottom: -54px;
+  margin: 0;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(17, 17, 20, 0.9);
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #d4d4d8;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s ease 0.2s;
+}
+.ts-fan.is-dealt .ts-fan-title {
+  opacity: 1;
+}
+.ts-card {
+  --x: calc(var(--d) * var(--step-x) * -1);
+  --y: calc((var(--d) * 70px + var(--d) * var(--d) * 14px) * -1);
+  --a: calc(3deg - var(--d) * 5deg);
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: calc(10 - var(--d));
+  width: var(--card-w);
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 14px;
+  overflow: hidden;
+  text-align: left;
+  background: #111114;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55);
+  /* collapsed into the button until dealt */
+  transform: translate(0, 40px) rotate(0deg) scale(0.5);
+  opacity: 0;
+  transition:
+    transform 0.6s cubic-bezier(0.2, 1.25, 0.4, 1) calc(var(--d) * 60ms),
+    opacity 0.25s ease calc(var(--d) * 60ms),
+    box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.ts-fan.is-dealt .ts-card {
+  transform: translate(var(--x), var(--y)) rotate(var(--a));
+  opacity: 1;
+}
+.ts-fan.is-dealt .ts-card:hover,
+.ts-fan.is-dealt .ts-card:focus-visible {
+  z-index: 20;
+  transform: translate(var(--x), calc(var(--y) - 14px)) rotate(0deg) scale(1.05);
+  border-color: var(--accent);
+  box-shadow: 0 26px 60px rgba(0, 0, 0, 0.6), 0 0 0 1px var(--accent), 0 0 30px -4px var(--accent);
+  transition-delay: 0s;
+}
+@media (max-width: 1000px) {
+  .ts-fan {
+    --step-x: 150px;
+    --card-w: 200px;
+  }
+}
+.ts-card-shot {
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: #222;
+}
+.ts-card-shot img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+.ts-card:hover .ts-card-shot img {
+  transform: scale(1.06);
+}
+.ts-card-here {
+  position: absolute;
+  left: 8px;
+  top: 8px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.ts-card.is-here .ts-card-shot img {
+  filter: saturate(0.5) brightness(0.75);
+}
+.ts-card-cap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px 12px;
+  border-top: 3px solid var(--accent);
+}
+.ts-card-num {
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.ts-card-text {
+  display: grid;
+  gap: 1px;
+  min-width: 0;
+}
+.ts-card-text strong {
+  font-size: 14px;
+}
+.ts-card-text span {
+  overflow: hidden;
+  font-size: 11.5px;
+  color: #a1a1aa;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* ---------- end-of-design nudge ---------- */
+.ts-nudge {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 14px);
+  width: min(320px, calc(100vw - 32px));
+  padding: 16px;
   border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 16px;
-  background: rgba(17, 17, 20, 0.95);
+  border-radius: 18px;
+  background: rgba(17, 17, 20, 0.94);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
-  animation: ts-in 0.18s ease-out;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+  animation: ts-nudge-in 0.55s cubic-bezier(0.2, 1.3, 0.4, 1);
 }
-@keyframes ts-in { from { opacity: 0; transform: translateY(8px); } }
-
-.ts-title {
-  margin: 2px 4px 10px;
-  font-size: 12px;
-  letter-spacing: 0.08em;
+@keyframes ts-nudge-in {
+  from { opacity: 0; transform: translateY(16px) scale(0.96); }
+}
+.ts-nudge-x {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 16px;
+  line-height: 1;
+}
+.ts-nudge-x:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+.ts-nudge-eyebrow {
+  margin: 0 30px 6px 0;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: #a1a1aa;
 }
-.ts-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
-
-.ts-option {
+.ts-nudge-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+.ts-nudge-sub {
+  margin: 4px 0 12px;
+  font-size: 13px;
+  color: #a1a1aa;
+}
+.ts-nudge-next {
   display: flex;
   align-items: center;
   gap: 12px;
   width: 100%;
   padding: 8px;
-  border: 1px solid transparent;
+  border: 1px solid rgba(252, 211, 77, 0.4);
   border-radius: 12px;
-  background: transparent;
-  color: inherit;
-  font: inherit;
+  background: rgba(252, 211, 77, 0.08);
   text-align: left;
-  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
 }
-.ts-option:hover { background: rgba(255, 255, 255, 0.06); }
-.ts-option.is-active { border-color: rgba(165, 180, 252, 0.6); background: rgba(165, 180, 252, 0.1); }
-
-.ts-text { display: grid; gap: 2px; }
-.ts-name { font-weight: 600; }
-.ts-num { color: #71717a; font-variant-numeric: tabular-nums; margin-right: 2px; }
-.ts-blurb { font-size: 12px; color: #a1a1aa; }
-
-/* Mini previews: a 64x44 canvas, four <i> blocks styled per theme. */
-.ts-prev {
-  position: relative;
-  flex: none;
-  width: 64px;
-  height: 44px;
+.ts-nudge-next:hover {
+  background: rgba(252, 211, 77, 0.16);
+  transform: translateY(-1px);
+}
+.ts-nudge-next img {
+  width: 84px;
+  height: 52px;
   border-radius: 8px;
-  overflow: hidden;
+  object-fit: cover;
 }
-.ts-prev i { position: absolute; display: block; }
+.ts-nudge-next small {
+  display: block;
+  font-size: 11px;
+  color: #a1a1aa;
+}
+.ts-nudge-next strong {
+  color: #fcd34d;
+  font-size: 15px;
+}
+.ts-nudge-all {
+  display: block;
+  margin: 10px auto 0;
+  padding: 4px 8px;
+  border: 0;
+  background: none;
+  font-size: 12.5px;
+  color: #d4d4d8;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
 
-.ts-prev-minimal { background: #0f172a; }
-.ts-prev-minimal i:nth-child(1) { left: 6px; top: 8px; width: 18px; height: 4px; background: #e2e8f0; border-radius: 2px; }
-.ts-prev-minimal i:nth-child(2) { left: 6px; top: 15px; width: 12px; height: 2px; background: #5eead4; }
-.ts-prev-minimal i:nth-child(3) { left: 32px; top: 8px; width: 26px; height: 12px; background: #1e293b; border-radius: 2px; }
-.ts-prev-minimal i:nth-child(4) { left: 32px; top: 24px; width: 26px; height: 12px; background: #1e293b; border-radius: 2px; }
+/* ---------- the curtain between designs ---------- */
+.ts-curtain {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 6px;
+  background: var(--bg);
+  color: var(--ink);
+  clip-path: circle(0% at calc(100% - 60px) calc(100% - 40px));
+  animation: ts-curtain 1.25s cubic-bezier(0.7, 0, 0.3, 1) forwards;
+}
+@keyframes ts-curtain {
+  0% { clip-path: circle(0% at calc(100% - 60px) calc(100% - 40px)); opacity: 1; }
+  38% { clip-path: circle(150% at calc(100% - 60px) calc(100% - 40px)); opacity: 1; }
+  72% { clip-path: circle(150% at calc(100% - 60px) calc(100% - 40px)); opacity: 1; }
+  100% { clip-path: circle(150% at calc(100% - 60px) calc(100% - 40px)); opacity: 0; }
+}
+.ts-curtain-small {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+.ts-curtain-name {
+  font-size: clamp(36px, 7vw, 84px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  animation: ts-name 1.25s ease forwards;
+}
+@keyframes ts-name {
+  0%, 20% { opacity: 0; transform: translateY(18px); }
+  45%, 75% { opacity: 1; transform: none; }
+  100% { opacity: 0; transform: translateY(-10px); }
+}
+.ts-curtain-bar {
+  width: 120px;
+  height: 3px;
+  margin-top: 10px;
+  border-radius: 3px;
+  background: var(--accent);
+  transform-origin: left;
+  animation: ts-bar 1.25s ease forwards;
+}
+@keyframes ts-bar {
+  0%, 25% { transform: scaleX(0); }
+  65% { transform: scaleX(1); }
+  100% { transform: scaleX(1); opacity: 0; }
+}
 
-.ts-prev-temple { background: radial-gradient(circle at 70% 30%, #e0492f 0 7px, transparent 8px), linear-gradient(#0b0d14, #1a1d2b); }
-.ts-prev-temple i:nth-child(1) { left: 14px; bottom: 6px; width: 3px; height: 22px; background: #b33a26; }
-.ts-prev-temple i:nth-child(2) { left: 34px; bottom: 6px; width: 3px; height: 22px; background: #b33a26; }
-.ts-prev-temple i:nth-child(3) { left: 10px; bottom: 26px; width: 31px; height: 3px; background: #b33a26; }
-.ts-prev-temple i:nth-child(4) { left: 0; bottom: 0; width: 64px; height: 6px; background: #05060a; }
-
-.ts-prev-bento { background: #f5f1e8; }
-.ts-prev-bento i { border: 1.5px solid #111; border-radius: 3px; }
-.ts-prev-bento i:nth-child(1) { left: 4px; top: 4px; width: 30px; height: 20px; background: #ffd23f; }
-.ts-prev-bento i:nth-child(2) { left: 37px; top: 4px; width: 23px; height: 20px; background: #fff; }
-.ts-prev-bento i:nth-child(3) { left: 4px; top: 27px; width: 20px; height: 13px; background: #ff6b6b; }
-.ts-prev-bento i:nth-child(4) { left: 27px; top: 27px; width: 33px; height: 13px; background: #4d96ff; }
-
-.ts-prev-os { background: linear-gradient(135deg, #3b2a6b, #0e4f63); }
-.ts-prev-os i:nth-child(1) { left: 6px; top: 6px; width: 30px; height: 22px; background: #111827; border-radius: 3px; border-top: 4px solid #374151; }
-.ts-prev-os i:nth-child(2) { left: 26px; top: 12px; width: 32px; height: 20px; background: #f3f4f6; border-radius: 3px; border-top: 4px solid #d1d5db; }
-.ts-prev-os i:nth-child(3) { left: 18px; bottom: 3px; width: 28px; height: 6px; background: rgba(255, 255, 255, 0.35); border-radius: 3px; }
-.ts-prev-os i:nth-child(4) { display: none; }
-
-@media (max-width: 600px) {
-  .ts-root { right: 12px; bottom: 12px; }
-  .ts-label { display: none; }
-  .ts-button { padding: 12px; }
+/* ---------- phones: the hand becomes a swipeable strip ---------- */
+@media (max-width: 640px) {
+  .ts-root {
+    right: 12px;
+    bottom: 12px;
+  }
+  .ts-label {
+    display: none;
+  }
+  .ts-button {
+    padding: 11px 12px;
+  }
+  .ts-fan {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 76px;
+    width: auto;
+    height: auto;
+    display: flex;
+    gap: 12px;
+    padding: 34px 16px 12px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    pointer-events: auto;
+  }
+  .ts-fan-title {
+    left: 16px;
+    right: auto;
+    top: 0;
+  }
+  .ts-card,
+  .ts-fan.is-dealt .ts-card,
+  .ts-fan.is-dealt .ts-card:hover,
+  .ts-fan.is-dealt .ts-card:focus-visible {
+    position: relative;
+    flex: none;
+    width: 72vw;
+    max-width: 280px;
+    scroll-snap-align: center;
+    transform: none;
+  }
+  .ts-card {
+    transform: translateY(30px);
+  }
+  .ts-fan.is-dealt .ts-card {
+    transform: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ts-panel { animation: none; }
-  .ts-button { transition: none; }
+  .ts-button::before,
+  .ts-button.is-calling,
+  .ts-nudge {
+    animation: none;
+  }
+  .ts-card,
+  .ts-button {
+    transition: none;
+  }
 }

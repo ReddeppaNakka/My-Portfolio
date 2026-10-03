@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useFonts } from "../../shell/useFonts";
-import { profile } from "../../data/portfolio";
+import { profile, photos } from "../../data/portfolio";
 import { FileIcon } from "../../shell/icons";
 import { CHAPTERS, Hero, Threshold, Path, Craft, Afterlight, Garden } from "./Chapters";
 import { useReveal } from "./useReveal";
@@ -57,6 +57,7 @@ export default function TempleTheme({ page = "home" }) {
           scene = createTempleScene(canvas, {
             mobile,
             reducedMotion: reduced,
+            figureUrl: photos.temple.silhouette,
             onFirstFrame: () => {
               readyTimer = window.setTimeout(() => !cancelled && setReady(true), 60);
             },

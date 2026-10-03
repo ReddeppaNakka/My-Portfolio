@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useFonts } from "../../shell/useFonts";
 import { OsLogo } from "./AppIcon";
 import Desktop from "./Desktop";
 import Mobile from "./Mobile";
-import { prefersReducedMotion, useMediaQuery } from "./common";
+import { formatIST, prefersReducedMotion, useMediaQuery, useNow } from "./common";
+import { profile, photos } from "../../data/portfolio";
 import "./os.css";
 
 const BOOT_KEY = "reddy-os-booted";
@@ -55,10 +56,74 @@ function Boot({ onDone }) {
   );
 }
 
+// Painted wallpaper over the gradient fallback; fades (and gently settles) in once decoded.
+function Wallpaper() {
+  const [loaded, setLoaded] = useState(false);
+  const imgRef = useRef(null);
+  useEffect(() => {
+    if (imgRef.current?.complete && imgRef.current.naturalWidth) setLoaded(true);
+  }, []);
+  return (
+    <div className="os-wallpaper" aria-hidden="true">
+      <img
+        ref={imgRef}
+        className={`os-wallpaper-img${loaded ? " is-loaded" : ""}`}
+        src={photos.os.wallpaper}
+        srcSet={`${photos.os.wallpaperSm} 960w, ${photos.os.wallpaper} 1672w`}
+        sizes="100vw"
+        alt=""
+        decoding="async"
+        fetchpriority="high"
+        onLoad={() => setLoaded(true)}
+      />
+      <span className="os-wallpaper-shade" />
+      <span className="os-grain" />
+    </div>
+  );
+}
+
+// Lock screen shown once per session, right after the boot animation.
+function Login({ onDone }) {
+  const now = useNow();
+  const [leaving, setLeaving] = useState(false);
+  const btnRef = useRef(null);
+  const go = useCallback(() => {
+    setLeaving(true);
+    setTimeout(onDone, 300);
+  }, [onDone]);
+  useEffect(() => {
+    btnRef.current?.focus({ preventScroll: true });
+    const onKey = (e) => {
+      if (e.key === "Enter" || e.key === " " || e.key === "Escape") return; // handled by the button / ignored
+      go();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [go]);
+
+  return (
+    <div className={`os-login${leaving ? " is-leaving" : ""}`} role="dialog" aria-label="Log in to Reddy OS" onClick={go}>
+      <time className="os-login-time" dateTime={now.toISOString()}>
+        {formatIST(now, { hour: "numeric", minute: "2-digit", hour12: false })}
+        <small>{formatIST(now, { weekday: "long", day: "numeric", month: "long" })}</small>
+      </time>
+      <div className="os-login-avatar">
+        <img src={photos.os.avatar} alt="" width="132" height="132" />
+      </div>
+      <p className="os-login-name">{profile.nickname}</p>
+      <button ref={btnRef} type="button" className="os-login-btn" onClick={(e) => (e.stopPropagation(), go())}>
+        Log in as guest →
+      </button>
+      <p className="os-login-hint">Click anywhere or press any key</p>
+    </div>
+  );
+}
+
 export default function OsTheme({ page = "home" }) {
   useFonts("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap");
   const phone = useMediaQuery(PHONE_QUERY);
   const [booting, setBooting] = useState(shouldBoot);
+  const [login, setLogin] = useState(booting);
 
   const done = useState(() => () => {
     try {
@@ -71,14 +136,9 @@ export default function OsTheme({ page = "home" }) {
 
   return (
     <div className="th-os">
-      <div className="os-wallpaper" aria-hidden="true">
-        <span className="os-blob os-blob--a" />
-        <span className="os-blob os-blob--b" />
-        <span className="os-blob os-blob--c" />
-        <span className="os-blob os-blob--d" />
-        <span className="os-grain" />
-      </div>
+      <Wallpaper />
       {booting ? <Boot onDone={done} /> : phone ? <Mobile page={page} /> : <Desktop page={page} />}
+      {!booting && login && <Login onDone={() => setLogin(false)} />}
     </div>
   );
 }

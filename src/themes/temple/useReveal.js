@@ -42,6 +42,22 @@ export function useReveal(rootRef, reduced) {
           gsap.to(batch, { autoAlpha: 1, y: 0, duration: 1.05, ease: "power3.out", stagger: 0.08, overwrite: true }),
       });
 
+      // summit: the Hokage steps out of the shadow as the last chapter arrives
+      const hokage = root.querySelector(".tp-hokage-img");
+      if (hokage) {
+        gsap.fromTo(
+          hokage,
+          { yPercent: 14, autoAlpha: 0, filter: "brightness(0.15) saturate(0.4)" },
+          {
+            yPercent: 0,
+            autoAlpha: 1,
+            filter: "brightness(1) saturate(1)",
+            ease: "none",
+            scrollTrigger: { trigger: root.querySelector(".tp-footer"), start: "top 90%", end: "top 15%", scrub: 0.8 },
+          }
+        );
+      }
+
       // chapter hand-off: the upper part of a chapter softly dims/blurs as it exits
       root.querySelectorAll(".tp-chapter").forEach((sec) => {
         if (sec.classList.contains("tp-footer")) return;

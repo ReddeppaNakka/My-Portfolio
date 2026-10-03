@@ -15,6 +15,7 @@ export const APP_META = {
   terminal: { title: "Terminal", w: 620, h: 420 },
   resume: { title: "Résumé.pdf", w: 760, h: 700 },
   certs: { title: "Certificates", w: 800, h: 580 },
+  photos: { title: "Photos", w: 820, h: 620 },
   contact: { title: "Contact", w: 600, h: 600 },
   readme: { title: "Read me first.txt", w: 500, h: 500 },
   osinfo: { title: "About this portfolio", w: 440, h: 470 },

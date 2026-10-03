@@ -15,7 +15,7 @@ const CAT_LABEL = { ai: "AI", fullstack: "Full-stack", ml: "ML", frontend: "Fron
 
 function ProjectCard({ project, index, setRef }) {
   return (
-    <article ref={setRef} className="bt-tile bt-card">
+    <article ref={setRef} className="bt-tile bt-card" data-cursor={project.live ? "LIVE ↗" : "CODE ↗"}>
       <div className="bt-card-media">
         <Cover project={project} index={index} />
         <span className="bt-card-sticker">

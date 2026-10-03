@@ -1,14 +1,40 @@
-import { profile, socials, stats, experience, featuredProjects, skills } from "../../data/portfolio";
+import { useState } from "react";
+import { profile, socials, stats, experience, featuredProjects, skills, photos } from "../../data/portfolio";
 import { socialIcon, ArrowUpRightIcon, MailIcon, FileIcon, GitHubIcon } from "../../shell/icons";
 import { Clock, Cover, Marquee, StatusSticker, ext, useTilt } from "./parts";
 
 const STAT_FILLS = ["", "yellow", "", "blue"];
 
+// Polaroid that flips from a work-mode portrait to an off-duty photo on click/tap.
+function PhotoFlip({ where }) {
+  const [flipped, setFlipped] = useState(false);
+  return (
+    <figure className="bt-tile bt-photo">
+      <button
+        type="button"
+        className={`bt-photo-frame bt-flip${flipped ? " is-flipped" : ""}`}
+        aria-pressed={flipped}
+        aria-label={flipped ? "Show professional photo" : "Flip to see an off-duty photo"}
+        onClick={() => setFlipped((v) => !v)}
+      >
+        <span className="bt-flip-inner">
+          <img className="bt-flip-face" src={photos.bento.headshot} alt={`Portrait of ${profile.name} at a studio desk, arms crossed`} width="800" height="862" />
+          <img className="bt-flip-face bt-flip-back" src={photos.bento.fun} alt={`${profile.name} laughing with a coffee, off duty`} width="800" height="862" loading="lazy" />
+        </span>
+      </button>
+      <figcaption className="bt-sticker bt-sticker--place">📍 {where}</figcaption>
+      <span className="bt-sticker bt-sticker--flip" aria-hidden="true">
+        {flipped ? "← back to work" : "click to flip ↻"}
+      </span>
+    </figure>
+  );
+}
+
 function FeaturedTile({ project, index, reduced }) {
   const tiltRef = useTilt(reduced);
   const href = project.live || project.github;
   return (
-    <article ref={tiltRef} className={`bt-tile bt-feat bt-feat-${index + 1} bt-press`}>
+    <article ref={tiltRef} className={`bt-tile bt-feat bt-feat-${index + 1} bt-press`} data-cursor={project.live ? "LIVE ↗" : "CODE ↗"}>
       <Cover project={project} index={index} eager={index < 2} />
       <div className="bt-feat-body">
         <div className="bt-feat-top">
@@ -65,12 +91,7 @@ export default function Hero({ reduced }) {
           </div>
         </div>
 
-        <figure className="bt-tile bt-photo">
-          <div className="bt-photo-frame">
-            <img src={profile.photo} alt={`Portrait of ${profile.name}`} width="520" height="560" />
-          </div>
-          <figcaption className="bt-sticker bt-sticker--place">📍 {where}</figcaption>
-        </figure>
+        <PhotoFlip where={where} />
 
         <div className="bt-tile bt-avail bt-fill-mint">
           <div className="bt-label">Status</div>

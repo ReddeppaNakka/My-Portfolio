@@ -7,6 +7,7 @@ import Experience from "./apps/Experience";
 import Terminal from "./apps/Terminal";
 import Resume from "./apps/Resume";
 import Certificates from "./apps/Certificates";
+import Photos from "./apps/Photos";
 import Contact from "./apps/Contact";
 import { Readme, OsInfo } from "./apps/Notes";
 
@@ -17,6 +18,7 @@ export const APPS = {
   terminal: { Component: Terminal, dark: true, flush: true },
   resume: { Component: Resume, flush: true },
   certs: { Component: Certificates, flush: true },
+  photos: { Component: Photos, flush: true },
   contact: { Component: Contact, flush: true },
   readme: { Component: Readme },
   osinfo: { Component: OsInfo },
@@ -36,7 +38,7 @@ export function appName(app) {
 }
 
 // What sits in the dock and on the desktop.
-export const DOCK_APPS = ["about", "projects", "experience", "terminal", "certs", "contact", "resume"];
+export const DOCK_APPS = ["about", "projects", "experience", "terminal", "photos", "certs", "contact", "resume"];
 export const DESKTOP_ICONS = [
   { app: "about", label: "About Me" },
   { app: "projects", label: "Projects" },
@@ -44,6 +46,7 @@ export const DESKTOP_ICONS = [
   { app: "terminal", label: "Terminal" },
   { app: "resume", label: "Résumé.pdf" },
   { app: "certs", label: "Certificates" },
+  { app: "photos", label: "Photos" },
   { app: "contact", label: "Contact" },
   { app: "readme", label: "Read me first.txt" },
 ];

@@ -10,16 +10,63 @@ export const profile = {
   tagline:
     "I build full-stack products, backend systems and AI pipelines that ship to production and get used.",
   location: "Hyderabad, India",
-  availability: "Open to full-time roles",
+  availability: "Open to roles anywhere in India",
+  relocation: "Based in Hyderabad, happy to relocate anywhere in India.",
   email: "reddeppanakka@gmail.com",
   phone: "+91 7330680121",
   resume: "/Reddeppa_Nakka_Resume.pdf",
-  photo: "/picture1.png",
+  photo: "/photos/bento/work.webp",
   about: [
     "I'm a software engineer who works across the stack, with most of my energy going into backend systems and AI-powered products. I like problems where an LLM or ML model has to do real work inside a reliable system — with validation, fallbacks and a database that still makes sense a year later.",
     "Most recently I was an AI & Software Development Engineer Intern at Befach, where I owned most of the end-to-end development of an AI task platform that turns multilingual meeting transcripts into assignable tasks — now running in production. Before that I built FastAPI services at MAANG Technologies.",
     "Outside work I build things to understand how they work: an agentic travel recommender, a daily intelligence pipeline, an interactive DSA platform and a fully local voice agent. I graduated in Computer Science from RGUKT RK Valley in 2025.",
   ],
+};
+
+// Per-theme imagery. Originals live in /photos-src (not deployed).
+export const photos = {
+  temple: {
+    hokage: "/photos/temple/hokage.webp",
+    silhouette: "/photos/temple/hokage-silhouette.webp",
+    scroll: "/photos/temple/scroll.webp",
+  },
+  minimal: {
+    portrait: "/photos/minimal/portrait-a.webp",
+    portraitAlt: "/photos/minimal/portrait-b.webp",
+    candid: "/photos/minimal/candid.webp",
+  },
+  bento: {
+    headshot: "/photos/bento/work.webp",
+    fun: "/photos/bento/photo-fun.webp",
+    avatar: "/photos/bento/avatar-3d.webp",
+  },
+  os: {
+    avatar: "/photos/os/avatar-pixel.webp",
+    wallpaper: "/photos/os/wallpaper.webp",
+    wallpaperSm: "/photos/os/wallpaper-sm.webp",
+    portrait: "/photos/os/portrait.webp",
+    albums: [
+      {
+        id: "life",
+        title: "Life",
+        items: [
+          { src: "/photos/os/desk.webp", name: "desk.jpg", caption: "Where the work happens" },
+          { src: "/photos/os/teamwork.webp", name: "whiteboard.jpg", caption: "Walking the team through a system design" },
+          { src: "/photos/os/outdoors.webp", name: "hyderabad.jpg", caption: "Sunset over Hyderabad" },
+          { src: "/photos/os/portrait.webp", name: "me.jpg", caption: "Reddy" },
+        ],
+      },
+      {
+        id: "alter",
+        title: "Alter egos",
+        items: [
+          { src: "/photos/os/grandmaster.webp", name: "grandmaster.png", caption: "The Grandmaster" },
+          { src: "/photos/os/wizard.webp", name: "wizard.png", caption: "The Wizard" },
+          { src: "/photos/os/cyberpunk.webp", name: "guardian.png", caption: "Cyberpunk Guardian" },
+        ],
+      },
+    ],
+  },
 };
 
 export const socials = [
@@ -155,7 +202,7 @@ export const projects = [
     year: 2026,
     madeAt: "Personal",
     featured: true,
-    status: "in-progress",
+    status: "live",
     category: "ai",
     short: "Evidence-linked technology intelligence pipeline.",
     description:
@@ -163,7 +210,7 @@ export const projects = [
     tech: ["Python", "Next.js 15", "Supabase", "pgvector", "GitHub Actions", "LLMs"],
     image: "/projects/newsfall.jpg",
     github: "https://github.com/ReddeppaNakka/Newsfall",
-    live: null,
+    live: "https://newsfall.vercel.app/",
   },
   {
     id: "pulseai",

@@ -8,6 +8,7 @@ import {
   featuredProjects,
   skills,
   certifications,
+  photos,
 } from "../../data/portfolio";
 import { ArrowUpRightIcon, ArrowRightIcon, FileIcon, socialIcon } from "../../shell/icons";
 import { ChapterMark, ProjectImage, ProjectLinks, Status, VerticalKanji, Words, ext } from "./parts";
@@ -83,6 +84,9 @@ export function Threshold() {
       <span id="tp-h-threshold" className="sr-only">
         About
       </span>
+      <figure className="tp-scroll" data-reveal>
+        <img src={photos.temple.scroll} alt={`Ink-wash portrait of ${profile.name} on a hanging scroll`} width="620" height="1100" loading="lazy" decoding="async" />
+      </figure>
       <div className="tp-panel tp-prose">
         {profile.about.map((p, i) => (
           <p key={i} data-reveal className={i === 0 ? "tp-lede" : ""}>
@@ -289,6 +293,18 @@ export function Garden() {
   return (
     <footer id={`tp-${ch.id}`} data-chapter={5} className="tp-chapter tp-footer" aria-labelledby="tp-h-garden">
       <VerticalKanji kanji={ch.kanji} romaji={ch.romaji} />
+      {/* the figure glimpsed at the top of the stairs, met at the summit */}
+      <figure className="tp-hokage">
+        <img
+          className="tp-hokage-img"
+          src={photos.temple.hokage}
+          alt={`${profile.name} as the Hokage, standing at the summit in a flame-hemmed cloak`}
+          width="900"
+          height="1350"
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
       <div className="tp-chapter-inner">
         <ChapterMark {...ch} />
         <Words as="h2" text="Walk the rest of the way together." className="tp-h2 tp-h2-xl" />
@@ -326,6 +342,19 @@ export function Garden() {
         <p className="tp-manifesto" data-reveal>
           Build quietly. Ship carefully. Leave the path a little better lit than you found it.
         </p>
+        <figure className="tp-epigraph" data-reveal>
+          <blockquote lang="la">
+            <span>Veni</span>
+            <i aria-hidden="true" />
+            <span>vidi</span>
+            <i aria-hidden="true" />
+            <span>vici</span>
+            <span className="sr-only">.</span>
+          </blockquote>
+          <figcaption className="tp-mono">
+            I came · I saw · I conquered <span className="tp-dim">— Julius Caesar, 47 BC</span>
+          </figcaption>
+        </figure>
         <div className="tp-credits tp-mono">
           <span>
             © {new Date().getFullYear()} {profile.name} · {profile.location}
